@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace HTTPRequestLib
 {
-    public delegate void HTTPAsyncCallback(byte[] ba);
+    public delegate void HTTPAsyncCallback(bool success, byte[] ba);
     class RequestStruct
     {
         public WebRequest request;
@@ -102,13 +102,35 @@ namespace HTTPRequestLib
 
         internal static void RequestCallback(IAsyncResult ar)
         {
+            int count = 0;
+            bool success = false;
+            List<Exception> exceptions = new List<Exception>();
+            byte[] ba = new byte[0];
+
             RequestStruct requestStruct = (RequestStruct)ar.AsyncState;
-            requestStruct.response = requestStruct.request.EndGetResponse(ar);
-            requestStruct.responseStream = requestStruct.response.GetResponseStream();
-            if (DecodeResponseStream(ref requestStruct))
+            while (!success && count++ < 3)
             {
-                requestStruct.asyncCallback(requestStruct.responsedata);
+                try
+                {
+                    requestStruct.response = requestStruct.request.EndGetResponse(ar);
+                    requestStruct.responseStream = requestStruct.response.GetResponseStream();
+                    if (DecodeResponseStream(ref requestStruct))
+                    {
+                        ba = requestStruct.responsedata;
+                        success = true;
+                    }
+                }
+                catch (Exception e)
+                {
+                    exceptions.Add(e);
+                    if (count < 3)
+                        Thread.Sleep(1000);
+                    else
+                        ExceptionHistory.lastException = new HTTPResponseException(exceptions.ToArray());
+                }
             }
+
+            requestStruct.asyncCallback(success, ba);
         }
 
         internal static bool DecodeResponseStream(ref RequestStruct rs)
