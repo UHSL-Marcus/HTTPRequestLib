@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace HTTPRequestLibUWP
 {
-    class Get
+    public class Get
     {
         private Shared shared;
 
@@ -16,24 +16,19 @@ namespace HTTPRequestLibUWP
             shared = new Shared();
         }
 
-        public bool Request(string url, out byte[] reply, NameValueCollection headers = null, NameValueCollection parameters = null)
+        public async Task<HTTPResponse> Request(string url, NameValueCollection headers = null, NameValueCollection parameters = null)
         {
-            bool success = false;
-            bool complete = false;
-            byte[] responseBytes = new byte[0];
-            HTTPAsyncCallback callback = delegate (HTTPResponse resp)
-            {
-                responseBytes = resp.bytes;
-                success = resp.success;
-                complete = true;
-            };
-
-            if (Request(url, callback, headers, parameters))
-                while (!complete) { };
-
-            reply = responseBytes;
-            return success;
+            return await Request(url, (new CancellationTokenSource()).Token, headers, parameters);
         }
+        public async Task<HTTPResponse> Request(string url, CancellationToken ct, NameValueCollection headers = null, NameValueCollection parameters = null)
+        {
+            shared.headers = headers;
+            shared.parameters = parameters;
+            shared.url = url;
+
+            return await RequestTask(ct);
+        }
+
 
         public bool Request(string url, HTTPAsyncCallback callback, NameValueCollection headers = null, NameValueCollection parameters = null)
         {
@@ -41,11 +36,12 @@ namespace HTTPRequestLibUWP
             shared.parameters = parameters;
             shared.url = url;
 
-            Task<HTTPResponse> getTask = RequestTask(url, shared.cts.Token);
-            getTask.Start();
-            getTask.ContinueWith((i) => callback(i.Result));
+            Task<HTTPResponse> getTask = RequestTask(shared.cts.Token);
+            getTask.ContinueWith((i) => {
+                callback(i.Result);
+            });
 
-            return (getTask.Status == TaskStatus.Running || getTask.Status == TaskStatus.RanToCompletion);
+            return (getTask.Status != TaskStatus.Canceled || getTask.Status != TaskStatus.Faulted);
         }
 
         public void Cancel()
@@ -53,7 +49,7 @@ namespace HTTPRequestLibUWP
             shared.cts.Cancel();
         }
 
-        private async Task<HTTPResponse> RequestTask(string url, CancellationToken ct)
+        private async Task<HTTPResponse> RequestTask(CancellationToken ct)
         {
             HTTPResponse responseStruct = new HTTPResponse();
             
@@ -64,7 +60,7 @@ namespace HTTPRequestLibUWP
             {
                 try
                 {
-                    HttpResponseMessage response = await shared.client.GetAsync(shared.uri, ct);
+                    HttpResponseMessage response = await shared.client.GetAsync(shared.uri, ct).ConfigureAwait(false);
 
                     responseStruct.success = response.IsSuccessStatusCode;
                     

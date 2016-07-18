@@ -1,0 +1,2 @@
+C:\Users\ML15AAF\Documents\GitHub\HTTPRequestLib\App1\App1.csproj;x86
+C:\Users\ML15AAF\Documents\GitHub\HTTPRequestLib\HTTPRequestLibUWP\HTTPRequestLibUWP.csproj;neutral
