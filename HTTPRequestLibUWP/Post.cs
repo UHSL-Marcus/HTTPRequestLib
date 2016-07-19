@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace HTTPRequestLibUWP
 {
-    public class Post
+    public class Post : IDisposable
     {
         private Shared shared;
 
@@ -82,8 +82,14 @@ namespace HTTPRequestLibUWP
                 }
             }
 
+            
             return responseStruct;
 
+        }
+
+        public void Dispose()
+        {
+            shared.Dispose();
         }
     }
 }

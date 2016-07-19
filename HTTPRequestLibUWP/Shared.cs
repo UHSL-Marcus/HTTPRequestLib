@@ -26,7 +26,7 @@ namespace HTTPRequestLibUWP
         }
     }
     public delegate void HTTPAsyncCallback(HTTPResponse reponse);
-    internal class Shared
+    internal class Shared : IDisposable
     {
         private HttpClient _client;
         internal HttpClient client
@@ -150,6 +150,9 @@ namespace HTTPRequestLibUWP
             }
         }
 
-
+        public void Dispose()
+        {
+            _client.Dispose();
+        }
     }
 }
