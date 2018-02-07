@@ -67,7 +67,29 @@ namespace HTTPRequestLibUWP
                     Tuple<bool, byte[]> decode = await shared.DecodeResponseStream(response);
                     if (!decode.Item1) responseStruct.success = false;
                     else responseStruct.bytes = decode.Item2;
-                    
+
+                    foreach (KeyValuePair<string, IEnumerable<string>> kv in response.Headers)
+                    {
+                        string value = "";
+                        foreach (string val in kv.Value)
+                        {
+                            if (value.Length > 0) value += ",";
+                            value += val;
+                        }
+                        responseStruct.headers.Add(kv.Key, value); 
+                    }
+
+                    foreach (KeyValuePair<string, IEnumerable<string>> kv in response.Content.Headers)
+                    {
+                        string value = "";
+                        foreach (string val in kv.Value)
+                        {
+                            if (value.Length > 0) value += ",";
+                            value += val;
+                        }
+                        responseStruct.headers.Add(kv.Key, value);
+                    }
+
                 }
                 catch (OperationCanceledException)
                 {

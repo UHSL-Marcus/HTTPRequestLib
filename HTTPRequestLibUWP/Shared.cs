@@ -17,12 +17,14 @@ namespace HTTPRequestLibUWP
         public bool wasCancelled;
         public bool success;
         public byte[] bytes;
+        public NameValueCollection headers;
 
         public HTTPResponse()
         {
             wasCancelled = false;
             success = false;
             bytes = new byte[0];
+            headers = new NameValueCollection();
         }
     }
     public delegate void HTTPAsyncCallback(HTTPResponse reponse);
@@ -121,7 +123,7 @@ namespace HTTPRequestLibUWP
                 using (Stream responseStream = await info.Content.ReadAsStreamAsync())
                 {
                     IEnumerable<string> encoding;
-                    if (info.Headers.TryGetValues("Content-Encoding", out encoding) && encoding.Contains("gzip"))
+                    if ((info.Headers.TryGetValues("Content-Encoding", out encoding) || info.Content.Headers.TryGetValues("Content-Encoding", out encoding)) && encoding.Contains("gzip"))
                     {
                         using (GZipStream decompressStream = new GZipStream(responseStream, CompressionMode.Decompress))
                         {

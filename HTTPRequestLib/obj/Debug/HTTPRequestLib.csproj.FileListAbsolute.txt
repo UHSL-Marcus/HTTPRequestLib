@@ -3,3 +3,8 @@ C:\Users\ML15AAF\Documents\GitHub\HTTPRequestLib\HTTPRequestLib\bin\Debug\HTTPRe
 C:\Users\ML15AAF\Documents\GitHub\HTTPRequestLib\HTTPRequestLib\obj\Debug\HTTPRequestLib.csprojResolveAssemblyReference.cache
 C:\Users\ML15AAF\Documents\GitHub\HTTPRequestLib\HTTPRequestLib\obj\Debug\HTTPRequestLib.dll
 C:\Users\ML15AAF\Documents\GitHub\HTTPRequestLib\HTTPRequestLib\obj\Debug\HTTPRequestLib.pdb
+C:\Users\ML15AAF\Documents\Projects\Libraries\Communication\HTTP\HTTPRequestLib\HTTPRequestLib\bin\Debug\HTTPRequestLib.dll
+C:\Users\ML15AAF\Documents\Projects\Libraries\Communication\HTTP\HTTPRequestLib\HTTPRequestLib\bin\Debug\HTTPRequestLib.pdb
+C:\Users\ML15AAF\Documents\Projects\Libraries\Communication\HTTP\HTTPRequestLib\HTTPRequestLib\obj\Debug\HTTPRequestLib.csprojResolveAssemblyReference.cache
+C:\Users\ML15AAF\Documents\Projects\Libraries\Communication\HTTP\HTTPRequestLib\HTTPRequestLib\obj\Debug\HTTPRequestLib.dll
+C:\Users\ML15AAF\Documents\Projects\Libraries\Communication\HTTP\HTTPRequestLib\HTTPRequestLib\obj\Debug\HTTPRequestLib.pdb
